@@ -12,21 +12,22 @@
 
 import SwiftUI
 
-class EmojiMemoryGame {
+class EmojiMemoryGame : ObservableObject {
     // A class - easy to share - lives in heap, has pointers. All views can have pointers to it. Many Views can see the portal onto the model
     // Problem with many Views pointing to same model - if a changed might mess for everyone.
     // Mitigate by closing the door, marking the variables private so rogue Views can't access the variables and write to them
     // Or use private(set) - a glass door, everyone can see through, but nobody can set
-    private var model: MemoryGame<String> = EmojiMemoryGame.createMemoryGame()
-    // Cannot use any functions on our class until all of the variables are initilised so have to make it static
+    @Published private var model: MemoryGame<String> = EmojiMemoryGame.createMemoryGame()
+    // Published wrapper calls objectWillChange.send() whenever there is a change to the variable
     
+    
+    // Cannot use any functions on our class until all of the variables are initilised so have to make it static
     static func createMemoryGame() -> MemoryGame<String> {
-        let emojis: Array<String> = ["👻", "🎃", "🕷"]
-        return MemoryGame<String>(numberOfPairsOfCards: emojis.count) { pairIndex in
-            return emojis[pairIndex]
-        }
+        let emojis: Array<String> = ["👻", "🎃", "🕷", "🤡", "👽"]
+        let numberPairs = Int.random(in: 2...4)
+        return MemoryGame<String>(numberOfPairsOfCards: numberPairs)
+        { pairIndex in emojis[pairIndex] }
     }
-        
     
     // MARK: - Access to the model
     var cards: Array<MemoryGame<String>.Card> {

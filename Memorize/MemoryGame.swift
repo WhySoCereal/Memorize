@@ -13,10 +13,12 @@ import Foundation // All basic types
 struct MemoryGame<CardContent> {
     var cards: Array<Card>
     
-    func choose(card: Card) {
-        print("card chosen: \(card)")
+    mutating func choose(card: Card) {
+        let i = cards.firstIndex(matching: card)
+        cards[i].isFaceUp = !cards[i].isFaceUp
+
     }
-    
+
     init(numberOfPairsOfCards: Int, cardContentFactory: (Int) -> CardContent) {
         cards = Array<Card>() // Creates an empty array of cards
         
@@ -25,6 +27,8 @@ struct MemoryGame<CardContent> {
             cards.append(Card(id: pairIndex*2, content: content))
             cards.append(Card(id: pairIndex*2+1, content: content))
         }
+        
+        cards.shuffle()
     }
     
     // A namespace thing
