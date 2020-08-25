@@ -14,15 +14,28 @@ struct EmojiMemoryGameView: View {
     @ObservedObject var viewModel: EmojiMemoryGame
     
     var body: some View {
-        Grid(viewModel.cards) { card in
-            CardView(card: card).onTapGesture { // gets the tapped card
-                self.viewModel.choose(card: card)
+        VStack {
+            Text(viewModel.theme.name)
+                .bold()
+                .font(.title)
+            Text("Score: \(viewModel.score)")
+            Divider()
+            Grid(viewModel.cards) { card in
+                CardView(card: card).onTapGesture { // gets the tapped card
+                    self.viewModel.choose(card: card)
+                }
+                .padding()
+                .aspectRatio(2/3, contentMode: .fit)
             }
-            .padding()
-            //.aspectRatio(0.66, contentMode: .fit)
+            .padding(5)
+            .foregroundColor(viewModel.theme.color)
+            Button("New Game") {
+                self.viewModel.newGame()
+            }
+            .foregroundColor(.black)
+            .font(.headline)
         }
-        .padding(5)
-        .foregroundColor(Color.orange)
+
     }
 }
 
@@ -43,7 +56,9 @@ struct CardView: View {
                     .stroke(lineWidth: edgeLineWidth)
                 Text(self.card.content)
             } else {
-                RoundedRectangle(cornerRadius: cornerRadius).fill()
+                if !card.isMatched {
+                    RoundedRectangle(cornerRadius: cornerRadius).fill()
+                }
             }
         }
         .font(Font.system(size: fontSize(for: size)))
