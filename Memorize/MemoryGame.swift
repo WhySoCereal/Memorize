@@ -12,11 +12,11 @@ import Foundation // All basic types
 
 // Equatable makes sure the CardContent generic has an == operator implementation
 struct MemoryGame<CardContent> where CardContent: Equatable {
-    var cards: Array<Card>
+    private(set) var cards: Array<Card> // Setting this is private but reading it is not
     var score = 0
     
-    var indexOfTheOneAndOnlyFaceUpCard: Int? {
-        // gets from the cards array, the one face up card
+    private var indexOfTheOneAndOnlyFaceUpCard: Int? {
+        // gets from the cards array, the one face up card, will set to nil if two cards are face up
         get {
             // making a new array by filtering out elements from the initial array
             cards.indices.filter { cards[$0].isFaceUp }.only
@@ -30,7 +30,7 @@ struct MemoryGame<CardContent> where CardContent: Equatable {
             }
         }
     }
-    
+
     // , is a sequential && used a lot with the if let
     mutating func choose(card: Card) {
         if let chosenIndex = cards.firstIndex(matching: card), !cards[chosenIndex].isFaceUp && !cards[chosenIndex].isMatched {
@@ -40,19 +40,22 @@ struct MemoryGame<CardContent> where CardContent: Equatable {
                 if cards[chosenIndex].content == cards[potentialMatchIndex].content {
                     cards[chosenIndex].isMatched = true
                     cards[potentialMatchIndex].isMatched = true
-                    cards[chosenIndex].isFaceUp = true
                     score += 2
                 } else {
-                    cards[chosenIndex].isFaceUp = true
                     if cards[chosenIndex].wasFlipped {
                         score -= 1
                     } else {
                         cards[chosenIndex].wasFlipped = true
                     }
+                    if cards[potentialMatchIndex].wasFlipped {
+                        score -= 1
+                    } else {
+                        cards[potentialMatchIndex].wasFlipped = true
+                    }
                 }
+                cards[chosenIndex].isFaceUp = true
             // The card is the first card to be flipped
             } else {
-                cards[chosenIndex].wasFlipped = true
                 indexOfTheOneAndOnlyFaceUpCard = chosenIndex
             }
             

@@ -23,7 +23,7 @@ class EmojiMemoryGame : ObservableObject {
     var theme: EmojiMemoryGameTheme
     
     // Cannot use any functions on our class until all of the variables are initilised so have to make it static
-    static func createMemoryGame(theme: EmojiMemoryGameTheme) -> MemoryGame<String> {
+    private static func createMemoryGame(theme: EmojiMemoryGameTheme) -> MemoryGame<String> {
         let numberPairs = Int.random(in: 2...4)
         return MemoryGame<String>(numberOfPairsOfCards: numberPairs)
         { pairIndex in theme.emojis[pairIndex] }
