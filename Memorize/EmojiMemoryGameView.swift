@@ -22,14 +22,20 @@ struct EmojiMemoryGameView: View {
             Divider()
             Grid(viewModel.cards) { card in
                 CardView(card: card).onTapGesture { // gets the tapped card
-                    self.viewModel.choose(card: card)
+                    withAnimation(.linear(duration: 0.75)) {
+                        self.viewModel.choose(card: card)
+                    }
+                    
                 }
                 .padding()
             }
             .padding(5)
             .foregroundColor(viewModel.theme.color)
+            // "New Game" not ideal - look into localised string key
             Button("New Game") {
-                self.viewModel.newGame()
+                withAnimation(.easeInOut(duration: 0.75)){
+                    self.viewModel.newGame()
+                }
             }
             .foregroundColor(.black)
             .font(.headline)
@@ -56,9 +62,14 @@ struct CardView: View {
                 Pie(startAngle: Angle.degrees(0-90), endAngle: Angle.degrees(110-90), clockwise: true)
                     .padding(5)
                     .opacity(0.7)
+                // Implicit animation - self contained, always applies, not coordinated with other animations
                 Text(self.card.content)
                     .font(Font.system(size: fontSize(for: size)))
+                    .rotationEffect(Angle.degrees(card.isMatched ? 360:0))
+                    .animation(card.isMatched ? Animation.linear(duration: 0.75).repeatForever(autoreverses: false) : .default)
             }.cardify(isFaceUp: card.isFaceUp)
+                .transition(AnyTransition.scale)
+                
         }
     }
     

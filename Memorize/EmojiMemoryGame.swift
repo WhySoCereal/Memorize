@@ -50,6 +50,7 @@ class EmojiMemoryGame : ObservableObject {
         model.choose(card: card)
     }
     
+    // user intent to create a new game
     func newGame() {
         theme = EmojiMemoryGameTheme.randomCase()
         model = EmojiMemoryGame.createMemoryGame(theme: theme)
